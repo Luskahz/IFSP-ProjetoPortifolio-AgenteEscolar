@@ -1,4 +1,4 @@
-import {remove, cursoValidator} from '../../model/cursoModel'
+import {remove, cursoValidator} from '../../model/cursoModel.js'
 
 export default async function deleteCursoController(req, res, next){
     try{

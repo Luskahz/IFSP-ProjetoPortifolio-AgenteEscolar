@@ -1,4 +1,4 @@
-import { create, cursoValidator } from "../../model/cursoModel"
+import { create, cursoValidator } from "../../model/cursoModel.js"
 
 export default async function createCursoController(req, res, next){
     try{

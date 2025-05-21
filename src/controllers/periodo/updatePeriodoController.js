@@ -1,4 +1,4 @@
-import { update, periodoValidator } from "../../model/periodoModel";
+import { update, periodoValidator } from "../../model/periodoModel.js";
 
 export default async function updatePeriodoController(req, res, next){
     try{

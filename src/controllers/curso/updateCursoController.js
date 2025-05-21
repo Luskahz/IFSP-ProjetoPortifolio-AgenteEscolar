@@ -1,4 +1,4 @@
-import { update, cursoValidator } from "../../model/cursoModel"
+import { update, cursoValidator } from "../../model/cursoModel.js"
 
 export default async function updateCursoController(req, res, next){
     try{

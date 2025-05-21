@@ -1,6 +1,6 @@
-import { getList } from "../../model/periodoModel"
+import { getList } from "../../model/periodoModel.js"
 
-export async function getListPeriodoController(req, res, next){
+export default async function getListPeriodoController(req, res, next){
     try{
         const result = await getList()
         return res.json({

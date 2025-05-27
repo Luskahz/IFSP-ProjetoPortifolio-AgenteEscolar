@@ -1,6 +1,6 @@
-import { getList } from "../../model/cursoModel"
+import { getList } from "../../model/cursoModel.js"
 
-export async function getListCursoController(req, res, next){
+export default async function getListCursoController(req, res, next){
     try{
         const result = await getList()
         return res.json({

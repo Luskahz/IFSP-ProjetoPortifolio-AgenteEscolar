@@ -5,13 +5,7 @@ import { welcomeController } from './controllers/welcomeController.js'
 import alunoRoutes from './routers/alunoRoutes.js'
 import periodoRouter from './routers/periodoRouter.js'
 import cursoRouter from './routers/cursoRouter.js'
-
-// Rotas
 import professorRoutes from './routers/professorRouter.js';
-import alunoRoutes from './routers/alunoRoutes.js';
-import periodoRouter from './routers/periodoRouter.js';
-import cursoRouter from './routers/cursoRouter.js';
-import { welcomeController } from './controllers/welcomeController.js';
 
 // Carrega variáveis de ambiente do arquivo .env
 dotenv.config();

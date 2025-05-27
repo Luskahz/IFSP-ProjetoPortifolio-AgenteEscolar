@@ -8,22 +8,24 @@ datasource db {
 }
 
 model alunos {
-  id         Int          @id @default(autoincrement())
-  nome       String       @db.VarChar(100)
-  email      String?      @unique(map: "email") @db.VarChar(150)
-  created_at DateTime?    @default(now()) @db.Timestamp(0)
-  updated_at DateTime?    @default(now()) @db.Timestamp(0)
-  matriculas matriculas[]
+  id         Int              @id @default(autoincrement())
+  nome       String           @db.VarChar(100)
+  email      String?          @unique(map: "email") @db.VarChar(150)
+  created_at DateTime?        @default(now()) @db.Timestamp(0)
+  updated_at DateTime?        @default(now()) @db.Timestamp(0)
+
   notas      notas[]
+  turmasRel  alunos_turmas[]  // relação N:N com turmas
 }
 
 model cursos {
-  id          Int           @id @default(autoincrement())
-  nome        String        @db.VarChar(100)
-  descricao   String?       @db.Text
-  created_at  DateTime?     @default(now()) @db.Timestamp(0)
-  updated_at  DateTime?     @default(now()) @db.Timestamp(0)
-  disciplinas disciplinas[]
+  id             Int                  @id @default(autoincrement())
+  nome           String               @db.VarChar(100)
+  descricao      String?              @db.Text
+  created_at     DateTime?            @default(now()) @db.Timestamp(0)
+  updated_at     DateTime?            @default(now()) @db.Timestamp(0)
+
+  disciplinas    disciplinas[]
   cursoPeriodos  cursos_periodos[]
 }
 
@@ -31,12 +33,12 @@ model disciplinas {
   id            Int          @id @default(autoincrement())
   nome          String       @db.VarChar(100)
   curso_id      Int
-  professor_id  Int?         
+  professor_id  Int?
   created_at    DateTime?    @default(now()) @db.Timestamp(0)
   updated_at    DateTime?    @default(now()) @db.Timestamp(0)
 
-  cursos        cursos       @relation(fields: [curso_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "disciplinas_ibfk_1")
-  professores   professores? @relation(fields: [professor_id], references: [id], onDelete: SetNull, onUpdate: NoAction, map: "disciplinas_ibfk_2")
+  cursos        cursos       @relation(fields: [curso_id], references: [id], onDelete: Cascade, map: "disciplinas_ibfk_1")
+  professores   professores? @relation(fields: [professor_id], references: [id], onDelete: SetNull, map: "disciplinas_ibfk_2")
   notas         notas[]
   turmas        turmas[]
 
@@ -44,52 +46,34 @@ model disciplinas {
   @@index([professor_id], map: "professor_id")
 }
 
-model matriculas {
-  id         Int       @id @default(autoincrement())
-  aluno_id   Int
-  periodo_id Int
-  created_at DateTime? @default(now()) @db.Timestamp(0)
-  updated_at DateTime? @default(now()) @db.Timestamp(0)
-
-  alunos     alunos    @relation(fields: [aluno_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "matriculas_ibfk_1")
-  periodos   periodos  @relation(fields: [periodo_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "matriculas_ibfk_2")
-
-  @@index([aluno_id], map: "aluno_id")
-  @@index([periodo_id], map: "periodo_id")
-}
-
 model notas {
   id            Int         @id @default(autoincrement())
   aluno_id      Int
   disciplina_id Int
   periodo_id    Int
-  tipo_nota_id  Int
-  valor         Decimal     @db.Decimal(5, 2)
+  valor         Decimal?    @db.Decimal(5, 2)  // Nota opcional
   created_at    DateTime?   @default(now()) @db.Timestamp(0)
   updated_at    DateTime?   @default(now()) @db.Timestamp(0)
 
-  alunos        alunos      @relation(fields: [aluno_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "notas_ibfk_1")
-  disciplinas   disciplinas @relation(fields: [disciplina_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "notas_ibfk_2")
-  periodos      periodos    @relation(fields: [periodo_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "notas_ibfk_3")
+  alunos        alunos      @relation(fields: [aluno_id], references: [id], onDelete: Cascade, map: "notas_ibfk_1")
+  disciplinas   disciplinas @relation(fields: [disciplina_id], references: [id], onDelete: Cascade, map: "notas_ibfk_2")
+  periodos      periodos    @relation(fields: [periodo_id], references: [id], onDelete: Cascade, map: "notas_ibfk_3")
 
-  @@unique([aluno_id, disciplina_id, periodo_id, tipo_nota_id], map: "unica_nota")
+  @@unique([aluno_id, disciplina_id, periodo_id], map: "unica_nota")
   @@index([disciplina_id], map: "disciplina_id")
-  @@index([tipo_nota_id], map: "idx_tipo_nota")
   @@index([periodo_id], map: "periodo_id")
 }
 
 model periodos {
-  id         Int          @id @default(autoincrement())
-  ano        Int          @db.Year
-  created_at DateTime?    @default(now()) @db.Timestamp(0)
-  updated_at DateTime?    @default(now()) @db.Timestamp(0)
-  matriculas matriculas[]
-  notas      notas[]
-  turmas     turmas[]
+  id             Int                  @id @default(autoincrement())
+  ano            Int                  @db.Year
+  created_at     DateTime?            @default(now()) @db.Timestamp(0)
+  updated_at     DateTime?            @default(now()) @db.Timestamp(0)
+
+  notas          notas[]
+  turmas         turmas[]
   cursoPeriodos  cursos_periodos[]
 }
-
-
 
 model cursos_periodos {
   curso_id   Int
@@ -101,13 +85,15 @@ model cursos_periodos {
   @@id([curso_id, periodo_id])
   @@index([periodo_id])
 }
+
 model professores {
   id         Int          @id @default(autoincrement())
   nome       String       @db.VarChar(100)
   email      String?      @unique(map: "email") @db.VarChar(150)
   created_at DateTime?    @default(now()) @db.Timestamp(0)
   updated_at DateTime?    @default(now()) @db.Timestamp(0)
-  disciplinas disciplinas[] 
+
+  disciplinas disciplinas[]
 }
 
 model turmas {
@@ -118,10 +104,22 @@ model turmas {
   created_at    DateTime?    @default(now()) @db.Timestamp(0)
   updated_at    DateTime?    @default(now()) @db.Timestamp(0)
 
-  disciplinas   disciplinas  @relation(fields: [disciplina_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "turmas_ibfk_2")
-  periodos      periodos     @relation(fields: [periodo_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "turmas_ibfk_3")
+  disciplinas   disciplinas  @relation(fields: [disciplina_id], references: [id], onDelete: Cascade, map: "turmas_ibfk_2")
+  periodos      periodos     @relation(fields: [periodo_id], references: [id], onDelete: Cascade, map: "turmas_ibfk_3")
+
+  alunosRel     alunos_turmas[]
 
   @@index([disciplina_id], map: "disciplina_id")
   @@index([periodo_id], map: "periodo_id")
-  
-  }
+}
+
+model alunos_turmas {
+  aluno_id Int
+  turma_id Int
+
+  alunos   alunos  @relation(fields: [aluno_id], references: [id], onDelete: Cascade)
+  turmas   turmas  @relation(fields: [turma_id], references: [id], onDelete: Cascade)
+
+  @@id([aluno_id, turma_id])
+  @@index([turma_id])
+}

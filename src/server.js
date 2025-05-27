@@ -6,6 +6,7 @@ import alunoRoutes from './routers/alunoRoutes.js'
 import periodoRouter from './routers/periodoRouter.js'
 import cursoRouter from './routers/cursoRouter.js'
 import professorRoutes from './routers/professorRouter.js';
+import notaRouter from './routers/notaRouter.js'
 
 // Carrega variáveis de ambiente do arquivo .env
 dotenv.config();
@@ -24,7 +25,8 @@ app.get('/', welcomeController);
 app.use('/alunos', alunoRoutes);
 app.use('/periodo', periodoRouter);
 app.use('/curso', cursoRouter);
-app.use('/professores', professorRoutes); 
+app.use('/professores', professorRoutes);
+app.use('/nota', notaRouter)
 
 app.listen(port, () => {
   console.log(`Servidor rodando em http://localhost:${port}`);

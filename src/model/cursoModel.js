@@ -5,7 +5,7 @@ const prisma = new PrismaClient()
 const cursoSchema = z.object({
     id: z.number().positive(),
     nome: z.string().max(100),
-    descricao: z.string().max(300)
+    descricao: z.string().max(300),
 })
 
 export const cursoValidator = (curso, partial = null) => {
@@ -17,7 +17,8 @@ export const cursoValidator = (curso, partial = null) => {
 
 export async function create(curso) {     //create
     const result = await prisma.cursos.create({
-        data: curso
+        data: curso,
+        curso_id: 1
     })
     return result
 }
